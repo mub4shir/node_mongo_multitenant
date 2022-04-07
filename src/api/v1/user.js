@@ -51,7 +51,9 @@ const deleteOne = async (req, res) => {
     const dbConnection = getConnection();
     const user = await userService.deleteUser(dbConnection, req.params.id);
     res.status(200).json({ success: true, user });
-  } catch (err) {}
+  } catch (err) {
+    res.status(err.statusCode || 500).json({ error: err.message });
+  }
 };
 
 module.exports = { signUp, fetchAll, fetchOne, updateOne, deleteOne };

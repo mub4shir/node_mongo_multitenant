@@ -27,9 +27,9 @@ const connectAllDb = async () => {
   }
 
   connectionMap = tenants
-    .map(tenant => {
+    .map((tenant) => {
       return {
-        [tenant.name]: initTenantDbConnection(tenant.dbURI)
+        [tenant.name]: initTenantDbConnection(tenant.dbURI),
       };
     })
     .reduce((prev, next) => {
@@ -41,7 +41,7 @@ const connectAllDb = async () => {
 /**
  * Get the connection information (knex instance) for the given tenant's slug.
  */
-const getConnectionByTenant = tenantName => {
+const getConnectionByTenant = (tenantName) => {
   console.log(`Getting connection for ${tenantName}`);
   if (connectionMap) {
     return connectionMap[tenantName];
@@ -66,6 +66,7 @@ const getAdminConnection = () => {
 const getConnection = () => {
   const nameSpace = getNamespace("unique context");
   const conn = nameSpace.get("connection");
+  console.log("ggggggggggggggg", conn);
 
   if (!conn) {
     throw new Error("Connection is not set for any tenant database");
@@ -78,5 +79,5 @@ module.exports = {
   connectAllDb,
   getAdminConnection,
   getConnection,
-  getConnectionByTenant
+  getConnectionByTenant,
 };
