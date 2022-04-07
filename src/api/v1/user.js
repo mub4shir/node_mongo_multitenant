@@ -15,12 +15,14 @@ const signUp = async (req, res) => {
 
 const fetchAll = async (req, res) => {
   try {
-    const dbConnection = getConnection();
+    const dbConnection = req.dbConnection;
+    console.log("entered fetchAll");
     console.log("fetchAll dbConnection", dbConnection.name);
     const users = await userService.getAllUsers(dbConnection);
     res.status(200).json({ success: true, users });
   } catch (err) {
     console.log("fetchAll error", err);
+
     res.status(err.statusCode || 500).json({ error: err.message });
   }
 };

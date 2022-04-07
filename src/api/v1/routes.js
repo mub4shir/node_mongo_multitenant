@@ -4,16 +4,16 @@ const express = require("express");
 const connectionResolver = require("../../middlewares/connectionResolver");
 
 // Mounting routes
-const v1Routes = express.Router();
+const v1Routes = express.Router({ mergeParams: true });
 
 const { protect, authorize } = require("../../middlewares/auth");
 
-v1Routes.use(protect);
-v1Routes.use(authorize("admin"));
 v1Routes.use("/tenant", connectionResolver.resolveTenant);
 v1Routes.use("/admin", connectionResolver.setAdminDb);
+v1Routes.use(protect);
+// v1Routes.use(authorize("admin"));
 
-// admin
+// admins
 const adminApi = require("./admin");
 v1Routes.post("/admin/tenant", adminApi.create);
 v1Routes.get("/admin/tenant", adminApi.fetchAll);

@@ -3,7 +3,7 @@ const tenantService = require("../../service/tenant");
 
 const create = async (req, res) => {
   try {
-    const dbConnection = getConnection();
+    const dbConnection = req.dbConnection;
     console.log("create dbConnection", dbConnection.name);
     const tenant = await tenantService.createTenant(dbConnection, req.body);
     res.status(200).json({ success: true, tenant });
@@ -15,7 +15,8 @@ const create = async (req, res) => {
 
 const fetchAll = async (req, res) => {
   try {
-    const dbConnection = getConnection();
+    //const dbConnection = getConnection();
+    dbConnection = req.dbConnection;
     console.log("fetchAll dbConnection", dbConnection.name);
     const tenants = await tenantService.getAllTenants(dbConnection);
     res.status(200).json({ success: true, tenants });

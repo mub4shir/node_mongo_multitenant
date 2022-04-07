@@ -16,7 +16,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-const userLogin = async (req, res) => {
+const userLogin = async (req, res, next) => {
   try {
     const dbConnection = getConnection();
     console.log("fetchAll dbConnection", dbConnection.name);
