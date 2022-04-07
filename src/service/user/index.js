@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 
-const getAllUsers = async tenantDbConnection => {
+const getAllUsers = async (tenantDbConnection) => {
   try {
     const User = await tenantDbConnection.model("User");
     const users = await User.find({});
@@ -20,20 +20,20 @@ const createUser = async (tenantDbConnection, body) => {
     const email = body.email;
     const name = body.name;
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    // const salt = await bcrypt.genSalt(10);
+    // const hashedPassword = await bcrypt.hash(password, salt);
 
     const userPresent = await User.findOne({
-      phoneNumber
+      phoneNumber,
     });
     if (userPresent) {
       throw new Error("User Already Present");
     }
     const newUser = await new User({
-      phoneNumber: phoneNumber,
-      password: hashedPassword,
+      phoneNumber,
+      password,
       email,
-      name
+      name,
     }).save();
     return newUser;
   } catch (error) {
@@ -41,5 +41,35 @@ const createUser = async (tenantDbConnection, body) => {
     throw error;
   }
 };
+const getUser = async (tenantDbConnection, id) => {
+  try {
+    const User = await tenantDbConnection.model("User");
+    const user = await User.findById(id);
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+const updateUser = async (tenantDbConnection, id, body) => {
+  try {
+    const User = await tenantDbConnection.model("User");
+    const user = await User.findByIdAndUpdate(id, body, {
+      new: true,
+      runValidators: true,
+    });
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+const deleteUser = async (tenantDbConnection, id) => {
+  try {
+    const User = await tenantDbConnection.model("User");
+    await User.findByIdAndDelete(id);
+    return {};
+  } catch (error) {
+    throw error;
+  }
+};
 
-module.exports = { getAllUsers, createUser };
+module.exports = { getAllUsers, createUser, getUser, updateUser, deleteUser };

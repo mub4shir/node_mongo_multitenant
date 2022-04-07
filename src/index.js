@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const path = require("path");
+const errorHandler = require("./middlewares/error");
 
 const { connectAllDb } = require("./connectionManager");
 
@@ -33,6 +34,7 @@ global.appRoot = path.resolve(__dirname);
 // mount the api routes
 const router = require("./api/routes");
 router(app);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Express server started at port: ${PORT}`);

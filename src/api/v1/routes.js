@@ -19,4 +19,10 @@ const userApi = require("./user");
 v1Routes.post("/tenant/user/signup", userApi.signUp);
 v1Routes.get("/tenant/user", userApi.fetchAll);
 
+v1Routes
+  .route("/tenant/user/:id")
+  .get(userApi.fetchOne)
+  .put(userApi.updateOne)
+  .delete(userApi.deleteOne);
+
 module.exports = v1Routes;
