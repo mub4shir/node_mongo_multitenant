@@ -49,5 +49,19 @@ const login = async (tenantDbConnection, body) => {
   }
   return user;
 };
+const logout = async () => {
+  try {
+    return {};
+  } catch (error) {}
+};
+const getMe = async (tenantDbConnection, id) => {
+  try {
+    const User = await tenantDbConnection.model("User");
+    const user = await User.findById(id);
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
 
-module.exports = { register, login };
+module.exports = { register, login, logout, getMe };

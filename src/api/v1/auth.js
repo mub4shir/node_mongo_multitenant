@@ -16,18 +16,53 @@ const registerUser = async (req, res) => {
   }
 };
 
-const userLogin = async (req, res, next) => {
+const userLogin = async (req, res) => {
   try {
     const dbConnection = getConnection();
     console.log("fetchAll dbConnection", dbConnection.name);
     const user = await authService.login(dbConnection, req.body);
     sendTokenResponse(user, 200, res);
-    //res.status(200).json({ success: true, tenants });
+    //res.status(200).json({ success: true, user });
   } catch (err) {
     console.log("fetchAll error", err);
     res.status(err.statusCode || 500).json({ error: err.message });
   }
 };
+
+const userLogout = async (req, res) => {
+  try {
+    // const dbConnection = getConnection();
+    // req.dbConnection = dbConnection;
+    const user = await authService.logout();
+    res.cookie("token", "none", {
+      expires: new Date(Date.now() + 10 * 1000),
+      httpOnly: true,
+    });
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (err) {
+    res.status(err.statusCode || 500).json({ error: err.message });
+  }
+};
+
+const getUser = async (req, res) => {
+  try {
+    // const dbConnection = getConnection();
+    const dbConnection = req.dbConnection;
+    req.dbConnection = dbConnection;
+    const user = await authService.getMe(dbConnection, req.user.id);
+    console.log(req.user);
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (err) {
+    res.status(err.statusCode || 500).json({ error: err.message });
+  }
+};
+
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
   // Create token
@@ -38,9 +73,9 @@ const sendTokenResponse = (user, statusCode, res) => {
     httpOnly: true,
   };
 
-  if (process.env.NODE_ENV === "production") {
-    options.secure = true;
-  }
+  // if (NODE_ENV === "production") {
+  //   options.secure = true;
+  // }
 
   res.status(statusCode).cookie("token", token, options).json({
     success: true,
@@ -48,4 +83,4 @@ const sendTokenResponse = (user, statusCode, res) => {
   });
 };
 
-module.exports = { registerUser, userLogin };
+module.exports = { registerUser, userLogin, userLogout, getUser };
